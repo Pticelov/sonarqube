@@ -25,6 +25,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
@@ -49,7 +50,7 @@ public class EsClientProvider extends ProviderAdapter {
 
   public EsClient provide(Configuration config) {
     if (cache == null) {
-      org.elasticsearch.common.settings.Settings.Builder esSettings = org.elasticsearch.common.settings.Settings.builder();
+      Settings.Builder esSettings = Settings.builder();
 
       // mandatory property defined by bootstrap process
       esSettings.put("cluster.name", config.get(ProcessProperties.CLUSTER_NAME).get());
