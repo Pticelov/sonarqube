@@ -357,7 +357,7 @@ public class NewIndex {
         .put("norms", valueOf(!disableNorms))
         .put("store", valueOf(store));
       if (FIELD_TYPE_KEYWORD.equals(getFieldType())) {
-        hash.put("doc_values", disabledDocValues ? "false" : "true");
+        hash.put("doc_values", valueOf(!disabledDocValues));
       }
       if (getFieldData()) {
         hash.put(FIELD_FIELDDATA, FIELDDATA_ENABLED);
@@ -402,7 +402,7 @@ public class NewIndex {
         .put("norms", "false")
         .put("store", valueOf(store));
       if (FIELD_TYPE_KEYWORD.equals(getFieldType())) {
-        builder.put("doc_values", disabledDocValues ? "false" : "true");
+        builder.put("doc_values", valueOf(!disabledDocValues));
       }
       multiFields.put(fieldName, builder.build());
       hash.put("fields", multiFields);
