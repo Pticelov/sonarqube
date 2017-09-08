@@ -19,10 +19,13 @@
  */
 package org.sonar.scanner.genericcoverage;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
@@ -41,6 +44,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class GenericTestExecutionReportParserTest {
+
+  @Rule
+  public TemporaryFolder temp = new TemporaryFolder();
 
   private TestPlanBuilder testPlanBuilder;
   private DefaultInputFile fileWithBranches;
@@ -132,13 +138,15 @@ public class GenericTestExecutionReportParserTest {
 
   private GenericTestExecutionReportParser parseUnitTestReport(String string) throws Exception {
     GenericTestExecutionReportParser parser = new GenericTestExecutionReportParser(testPlanBuilder);
-    parser.parse(new ByteArrayInputStream(string.getBytes()), context);
+    File report = temp.newFile();
+    FileUtils.write(report, string, StandardCharsets.UTF_8);
+    parser.parse(report, context);
     return parser;
   }
 
   private GenericTestExecutionReportParser parseReportFile(String reportLocation) throws Exception {
     GenericTestExecutionReportParser parser = new GenericTestExecutionReportParser(testPlanBuilder);
-    parser.parse(this.getClass().getResourceAsStream(reportLocation), context);
+    parser.parse(new File(this.getClass().getResource(reportLocation).toURI()), context);
     return parser;
   }
 

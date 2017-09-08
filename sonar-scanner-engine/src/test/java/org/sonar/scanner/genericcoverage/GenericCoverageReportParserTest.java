@@ -19,10 +19,13 @@
  */
 package org.sonar.scanner.genericcoverage;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
@@ -31,6 +34,10 @@ import org.sonar.api.batch.sensor.internal.SensorContextTester;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericCoverageReportParserTest {
+
+  @Rule
+  public TemporaryFolder temp = new TemporaryFolder();
+
   private DefaultInputFile fileWithBranches;
   private DefaultInputFile fileWithoutBranch;
   private DefaultInputFile emptyFile;
@@ -48,7 +55,7 @@ public class GenericCoverageReportParserTest {
   public void empty_file() throws Exception {
     addFileToFs(emptyFile);
     GenericCoverageReportParser parser = new GenericCoverageReportParser();
-    parser.parse(this.getClass().getResourceAsStream("coverage.xml"), context);
+    parser.parse(new File(this.getClass().getResource("coverage.xml").toURI()), context);
     assertThat(parser.numberOfMatchedFiles()).isEqualTo(1);
     assertThat(parser.numberOfUnknownFiles()).isEqualTo(3);
     assertThat(parser.firstUnknownFiles()).hasSize(3);
@@ -58,7 +65,7 @@ public class GenericCoverageReportParserTest {
   public void file_without_branch() throws Exception {
     addFileToFs(fileWithoutBranch);
     GenericCoverageReportParser parser = new GenericCoverageReportParser();
-    parser.parse(this.getClass().getResourceAsStream("coverage.xml"), context);
+    parser.parse(new File(this.getClass().getResource("coverage.xml").toURI()), context);
     assertThat(parser.numberOfMatchedFiles()).isEqualTo(1);
 
     assertThat(context.lineHits(fileWithoutBranch.key(), 2)).isEqualTo(0);
@@ -72,7 +79,7 @@ public class GenericCoverageReportParserTest {
   public void file_with_branches() throws Exception {
     addFileToFs(fileWithBranches);
     GenericCoverageReportParser parser = new GenericCoverageReportParser();
-    parser.parse(this.getClass().getResourceAsStream("coverage.xml"), context);
+    parser.parse(new File(this.getClass().getResource("coverage.xml").toURI()), context);
     assertThat(parser.numberOfMatchedFiles()).isEqualTo(1);
 
     assertThat(context.lineHits(fileWithBranches.key(), 3)).isEqualTo(1);
@@ -87,7 +94,7 @@ public class GenericCoverageReportParserTest {
 
   @Test(expected = IllegalStateException.class)
   public void coverage_invalid_root_node_name() throws Exception {
-    new GenericCoverageReportParser().parse(new ByteArrayInputStream("<mycoverage version=\"1\"></mycoverage>".getBytes()), context);
+    parseCoverageReport("<mycoverage version=\"1\"></mycoverage>");
   }
 
   @Test(expected = IllegalStateException.class)
@@ -209,7 +216,9 @@ public class GenericCoverageReportParserTest {
   }
 
   private void parseCoverageReport(String string) throws Exception {
-    new GenericCoverageReportParser().parse(new ByteArrayInputStream(string.getBytes()), context);
+    File report = temp.newFile();
+    FileUtils.write(report, string, StandardCharsets.UTF_8);
+    new GenericCoverageReportParser().parse(report, context);
   }
 
   private void parseCoverageReportFile(String reportLocation) throws Exception {
