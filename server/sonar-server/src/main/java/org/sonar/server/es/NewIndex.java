@@ -271,7 +271,7 @@ public class NewIndex {
   /**
    * Helper to define a string field in mapping of index type
    */
-  public abstract static class StringFieldBuilder<T extends StringFieldBuilder> {
+  public abstract static class StringFieldBuilder<T extends StringFieldBuilder<T>> {
     private final NewIndexType indexType;
     private final String fieldName;
     private boolean disableSearch = false;
