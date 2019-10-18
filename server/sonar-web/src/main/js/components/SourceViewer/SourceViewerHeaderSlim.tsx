@@ -32,6 +32,7 @@ import { getBranchLikeQuery, isMainBranch } from '../../helpers/branches';
 import { getBranchLikeUrl, getComponentIssuesUrl } from '../../helpers/urls';
 import Favorite from '../controls/Favorite';
 import './SourceViewerHeaderSlim.css';
+import HelpTooltip from 'sonar-ui-common/components/controls/HelpTooltip';
 
 export interface Props {
   branchLike: T.BranchLike | undefined;
@@ -77,8 +78,11 @@ export default function SourceViewerHeaderSlim({
         )}
 
         <div className="spacer-left">
-          <QualifierIcon qualifier={q} /> <span>{collapsedDirFromPath(path)}</span>
-          <span className="component-name-file">{fileFromPath(path)}</span>
+          <HelpTooltip overlay={path}>
+            <QualifierIcon qualifier={q} /> <span>{collapsedDirFromPath(path)}</span>
+            <span className="component-name-file">{fileFromPath(path)}</span>
+          </HelpTooltip>
+
         </div>
 
         <div className="spacer-left">
