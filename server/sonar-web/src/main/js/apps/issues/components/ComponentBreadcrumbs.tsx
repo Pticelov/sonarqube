@@ -21,6 +21,7 @@ import * as React from 'react';
 import { collapsePath, limitComponentName } from 'sonar-ui-common/helpers/path';
 import Organization from '../../../components/shared/Organization';
 import { getSelectedLocation } from '../utils';
+import HelpTooltip from 'sonar-ui-common/components/controls/HelpTooltip';
 
 interface Props {
   component?: T.Component;
@@ -74,8 +75,9 @@ export default function ComponentBreadcrumbs({
           <span className="slash-separator" />
         </span>
       )}
-
-      {collapsePath(componentName || '')}
+      <HelpTooltip overlay={componentName}>
+        {collapsePath(componentName || '')}
+      </HelpTooltip>
     </div>
   );
 }
