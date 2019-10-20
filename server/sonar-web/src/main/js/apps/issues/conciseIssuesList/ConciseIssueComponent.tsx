@@ -19,6 +19,7 @@
  */
 import * as React from 'react';
 import { collapsePath } from '../../../helpers/path';
+import HelpTooltip from '../../../components/controls/HelpTooltip';
 
 interface Props {
   path: string;
@@ -26,6 +27,8 @@ interface Props {
 
 export default function ConciseIssueComponent(props: Props) {
   return (
-    <div className="concise-issue-component note text-ellipsis">{collapsePath(props.path, 20)}</div>
+    <HelpTooltip overlay={props.path}>
+      <div className="concise-issue-component note text-ellipsis">{collapsePath(props.path, 20)}</div>
+    </HelpTooltip>
   );
 }

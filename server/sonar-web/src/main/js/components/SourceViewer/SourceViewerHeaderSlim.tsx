@@ -30,6 +30,7 @@ import { getPathUrlAsString, getBranchLikeUrl, getComponentIssuesUrl } from '../
 import { collapsedDirFromPath, fileFromPath } from '../../helpers/path';
 import { isMainBranch, getBranchLikeQuery } from '../../helpers/branches';
 import './SourceViewerHeaderSlim.css';
+import HelpTooltip from '../controls/HelpTooltip';
 
 export interface Props {
   branchLike: T.BranchLike | undefined;
@@ -75,8 +76,10 @@ export default function SourceViewerHeaderSlim({
         )}
 
         <div className="spacer-left">
-          <QualifierIcon qualifier={q} /> <span>{collapsedDirFromPath(path)}</span>
-          <span className="component-name-file">{fileFromPath(path)}</span>
+          <HelpTooltip overlay={path}>
+            <QualifierIcon qualifier={q} /> <span>{collapsedDirFromPath(path)}</span>
+            <span className="component-name-file">{fileFromPath(path)}</span>
+          </HelpTooltip>  
         </div>
         {sourceViewerFile.canMarkAsFavorite && (!branchLike || isMainBranch(branchLike)) && (
           <div className="nudged-up">

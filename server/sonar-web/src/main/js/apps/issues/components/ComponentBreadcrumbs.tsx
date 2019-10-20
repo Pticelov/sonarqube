@@ -21,6 +21,7 @@ import * as React from 'react';
 import { getSelectedLocation } from '../utils';
 import Organization from '../../../components/shared/Organization';
 import { collapsePath, limitComponentName } from '../../../helpers/path';
+import HelpTooltip from '../../../components/controls/HelpTooltip';
 
 interface Props {
   component?: T.Component;
@@ -75,7 +76,9 @@ export default function ComponentBreadcrumbs({
         </span>
       )}
 
-      {collapsePath(componentName || '')}
+      <HelpTooltip overlay={componentName}>
+        {collapsePath(componentName || '')}
+      </HelpTooltip>  
     </div>
   );
 }
